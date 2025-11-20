@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Authentication</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span class="material-icons">emergency</span>
+          Emergency Prep
+        </div>
+        <div class="brand-pill">
+          <span class="material-icons">verified</span>
+          Secure Access
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <form id="signInForm" class="card-panel app-surface">
+        <h5>Sign In</h5>
+        <div class="input-field">
+          <input type="email" id="signInEmail" required />
+          <label for="signInEmail">Email</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="signInPassword" required />
+          <label for="signInPassword">Password</label>
+        </div>
+        <button class="btn deep-orange darken-2" type="submit">Sign In</button>
+        <p class="switch-link">
+          <a href="#!" onclick="toggleForms('signup')"
+            >Need an account? Sign Up</a
+          >
+        </p>
+      </form>
+
+      <form
+        id="signUpForm"
+        class="card-panel app-surface"
+        style="display: none"
+      >
+        <h5>Sign Up</h5>
+        <div class="input-field">
+          <input type="text" id="signUpName" required />
+          <label for="signUpName">Name</label>
+        </div>
+        <div class="input-field">
+          <input type="email" id="signUpEmail" required />
+          <label for="signUpEmail">Email</label>
+        </div>
+        <div class="input-field">
+          <input type="password" id="signUpPassword" required />
+          <label for="signUpPassword">Password</label>
+        </div>
+        <button class="btn deep-orange darken-2" type="submit">
+          Create Account
+        </button>
+        <p class="switch-link">
+          <a href="#!" onclick="toggleForms('signin')"
+            >Already have an account? Sign In</a
+          >
+        </p>
+      </form>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="module">
+      import { auth } from "./firebaseDB.js";
+      import {
+        signInWithEmailAndPassword,
+        createUserWithEmailAndPassword,
+        updateProfile,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+
+      function toggleForms(form) {
+        document.getElementById("signInForm").style.display =
+          form === "signup" ? "none" : "block";
+        document.getElementById("signUpForm").style.display =
+          form === "signup" ? "block" : "none";
+      }
+
+      document
+        .getElementById("signInForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const email = document.getElementById("signInEmail").value;
+          const pass = document.getElementById("signInPassword").value;
+          try {
+            await signInWithEmailAndPassword(auth, email, pass);
+            M.toast({ html: "Signed in", classes: "green darken-2" });
+            location.href = "index.html";
+          } catch (err) {
+            M.toast({ html: err.message, classes: "red darken-2" });
+          }
+        });
+
+      document
+        .getElementById("signUpForm")
+        .addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const name = document.getElementById("signUpName").value;
+          const email = document.getElementById("signUpEmail").value;
+          const pass = document.getElementById("signUpPassword").value;
+          try {
+            const cred = await createUserWithEmailAndPassword(
+              auth,
+              email,
+              pass
+            );
+            await updateProfile(cred.user, { displayName: name });
+            M.toast({ html: "Account created", classes: "green darken-2" });
+            location.href = "index.html";
+          } catch (err) {
+            M.toast({ html: err.message, classes: "red darken-2" });
+          }
+        });
+    </script>
+  </body>
+</html>

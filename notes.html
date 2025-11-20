@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Quick Notes</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span class="material-icons">note</span>
+          Quick Notes
+        </div>
+        <div class="brand-pill">
+          <span class="material-icons">verified</span>
+          Secure Notes
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div
+        id="authStatus"
+        class="center-align"
+        style="margin-bottom: 1rem"
+      ></div>
+
+      <div class="card-panel app-surface">
+        <h5 class="deep-orange-text text-darken-2">Write a Note</h5>
+        <div class="input-field">
+          <textarea
+            id="noteInput"
+            class="materialize-textarea"
+            placeholder="Your note..."
+          ></textarea>
+        </div>
+        <button class="btn deep-orange darken-2" id="saveNoteBtn">
+          <i class="material-icons left">save</i>SAVE NOTE
+        </button>
+      </div>
+
+      <h5 class="deep-orange-text text-darken-2" style="margin-top: 2rem">
+        Saved Notes
+      </h5>
+      <div id="notesList" class="task-grid"></div>
+    </div>
+
+    <div class="fixed-action-btn">
+      <a class="btn-floating btn-large deep-orange darken-2" id="focusNoteBtn">
+        <i class="material-icons">add</i>
+      </a>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="module">
+      import { auth, db } from "./firebaseDB.js";
+      import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+      import {
+        collection,
+        addDoc,
+        getDocs,
+        deleteDoc,
+        doc,
+        query,
+        orderBy,
+      } from "https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+
+      const status = document.getElementById("authStatus");
+      const saveBtn = document.getElementById("saveNoteBtn");
+      const focusBtn = document.getElementById("focusNoteBtn");
+      const notesList = document.getElementById("notesList");
+
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          const name = user.displayName || user.email;
+          status.innerHTML = `Welcome, <strong>${name}</strong>`;
+          await loadNotes(user.uid);
+        } else {
+          status.innerHTML = `<a href="auth.html" class="btn deep-orange darken-2">Sign In to manage notes</a>`;
+        }
+      });
+
+      saveBtn.addEventListener("click", async () => {
+        const user = auth.currentUser;
+        if (!user)
+          return M.toast({ html: "Sign in first", classes: "red darken-2" });
+        const content = document.getElementById("noteInput").value.trim();
+        if (!content) return;
+        await addDoc(collection(db, "users", user.uid, "notes"), {
+          content,
+          updatedAt: Date.now(),
+        });
+        document.getElementById("noteInput").value = "";
+        M.updateTextFields();
+        await loadNotes(user.uid);
+        M.toast({ html: "Note saved", classes: "green darken-2" });
+      });
+
+      async function loadNotes(uid) {
+        notesList.innerHTML = "";
+        const q = query(
+          collection(db, "users", uid, "notes"),
+          orderBy("updatedAt", "desc")
+        );
+        const snap = await getDocs(q);
+        snap.forEach((docSnap) => {
+          const n = docSnap.data();
+          const card = document.createElement("div");
+          card.className = "task-card card";
+          card.innerHTML = `
+          <div class="card-content">
+            <p>${n.content}</p>
+          </div>
+          <div class="card-action">
+            <a href="#!" class="delete" onclick="deleteNote('${uid}','${docSnap.id}')">Delete</a>
+          </div>
+        `;
+          notesList.appendChild(card);
+        });
+      }
+
+      window.deleteNote = async (uid, id) => {
+        const user = auth.currentUser;
+        if (!user) return;
+        await deleteDoc(doc(db, "users", uid, "notes", id));
+        await loadNotes(uid);
+        M.toast({ html: "Note deleted", classes: "red darken-2" });
+      };
+
+      focusBtn.addEventListener("click", () => {
+        document.getElementById("noteInput").focus();
+        M.toast({
+          html: "Start writing your note...",
+          classes: "deep-orange darken-2",
+        });
+      });
+    </script>
+  </body>
+</html>

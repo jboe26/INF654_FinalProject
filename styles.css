@@ -1,0 +1,156 @@
+:root {
+  --primary: #ff4d2e;
+  --accent: #ff7a59;
+  --bg: #f9f9f9;
+  --card: #ffffff;
+  --text: #212121;
+  --muted: #9aa3af;
+  --radius: 14px;
+  --shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+}
+
+body {
+  background: var(--bg);
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}
+
+.app-header {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: #fff;
+  padding: 20px;
+  border-bottom-left-radius: 20px;
+  border-bottom-right-radius: 20px;
+  box-shadow: var(--shadow);
+}
+.brand-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.brand-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 700;
+  font-size: 1.2rem;
+}
+.brand-pill {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.8rem;
+}
+
+.card-panel.app-surface {
+  background: var(--card);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.tabs {
+  margin-top: 20px;
+  border: none;
+}
+.tabs .tab a {
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: none;
+}
+.tabs .tab a.active {
+  color: var(--primary);
+}
+.tabs .indicator {
+  display: none;
+}
+
+.task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+.task-card.card {
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: transform 0.2s ease;
+}
+.task-card.card:hover {
+  transform: translateY(-4px);
+}
+.card-content {
+  color: var(--text);
+}
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+.card-action {
+  border-top: 1px solid #eee;
+  background: #fafafa;
+}
+.card-action a {
+  font-weight: 600;
+  margin-right: 12px;
+  color: var(--muted);
+}
+.card-action a.edit {
+  color: #1976d2;
+}
+.card-action a.delete {
+  color: #d32f2f;
+}
+
+.empty-state {
+  background: var(--card);
+  border-radius: var(--radius);
+  padding: 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  margin-top: 20px;
+}
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 10px;
+  color: var(--primary);
+}
+
+.fixed-action-btn {
+  bottom: 30px;
+  right: 30px;
+}
+.btn-floating.btn-large {
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  box-shadow: 0 12px 24px rgba(255, 77, 46, 0.35);
+}
+
+.modal.bottom-sheet {
+  border-radius: 18px 18px 0 0;
+  background: var(--card);
+}
+.modal .modal-content h5 {
+  font-weight: 700;
+  margin-bottom: 12px;
+}
+.modal .input-field input,
+.modal .input-field textarea {
+  color: var(--text);
+}
+.modal .input-field label {
+  color: var(--muted);
+}
+.modal .modal-footer {
+  border-top: 1px solid #eee;
+}
+.modal .btn {
+  border-radius: 10px;
+  background: linear-gradient(135deg, var(--accent), var(--primary));
+  color: #fff;
+}
+
+.spacer {
+  height: 80px;
+}

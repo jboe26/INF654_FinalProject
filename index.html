@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Emergency Prep</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css"
+      rel="stylesheet"
+    />
+    <link href="styles.css" rel="stylesheet" />
+    <link rel="manifest" href="manifest.json" />
+    <meta name="theme-color" content="#FF4D2E" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-row">
+        <div class="brand-title">
+          <span class="material-icons">emergency</span>
+          Emergency Prep
+        </div>
+        <div class="brand-pill">
+          <span class="material-icons">verified</span>
+          Family-ready
+        </div>
+      </div>
+    </header>
+
+    <div class="container">
+      <div
+        id="authPanel"
+        class="card-panel app-surface"
+        style="margin-top: 16px"
+      >
+        <div id="authStatus" class="center-align"></div>
+        <div class="center-align" style="margin-top: 8px">
+          <a
+            href="notes.html"
+            id="goToNotesBtn"
+            class="btn green darken-2"
+            style="display: none"
+            >GO TO NOTES</a
+          >
+          <button
+            id="logoutBtn"
+            class="btn grey darken-3"
+            style="display: none"
+          >
+            LOGOUT
+          </button>
+        </div>
+      </div>
+
+      <ul id="folderTabs" class="tabs"></ul>
+      <section id="taskListSection" class="task-grid"></section>
+
+      <div id="emptyState" class="empty-state" style="display: none">
+        <div class="empty-icon">🧭</div>
+        <h6>No tasks yet</h6>
+        <p>Tap the + button to add your first emergency task.</p>
+        <button class="btn deep-orange darken-2" onclick="createNewFolder()">
+          <i class="material-icons left">create_new_folder</i>Create Folder
+        </button>
+      </div>
+
+      <div class="spacer"></div>
+    </div>
+
+    <div class="fixed-action-btn">
+      <a
+        class="btn-floating btn-large deep-orange darken-2 modal-trigger"
+        href="#taskModal"
+      >
+        <i class="material-icons">add</i>
+      </a>
+    </div>
+
+    <div id="taskModal" class="modal bottom-sheet">
+      <div class="modal-content">
+        <h5>Add Task</h5>
+        <form id="taskForm">
+          <input type="hidden" id="taskId" />
+          <div class="input-field">
+            <input id="taskTitle" type="text" required />
+            <label for="taskTitle">Task Title</label>
+          </div>
+          <div class="input-field">
+            <textarea
+              id="taskDescription"
+              class="materialize-textarea"
+            ></textarea>
+            <label for="taskDescription">Description</label>
+          </div>
+          <div class="input-field">
+            <select id="folderSelector" required>
+              <option value="" disabled selected>Select Folder</option>
+              <option value="General">General</option>
+            </select>
+            <label>Choose Folder</label>
+          </div>
+          <button type="submit" class="btn deep-orange darken-2">
+            <i class="material-icons left">check</i>Save Task
+          </button>
+          <a class="modal-close btn-flat">Close</a>
+        </form>
+      </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script type="module" src="firebaseDB.js"></script>
+    <script type="module" src="db.js"></script>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
